@@ -2,6 +2,7 @@ package acldemo.validation.mapping;
 
 import acldemo.validation.exceptions.GetIdInvocationFailException;
 import acldemo.validation.parameterInfoExtraction.typing.ParamType;
+import acldemo.validation.parameterInfoExtraction.typing.TypeCreator;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -35,8 +36,15 @@ public class CommonIdMapper {
 
         if(Collection.class.isAssignableFrom(paramType.getType()) ){
             ParameterizedType pType = paramType.getpType();
-            if(pType.toString().equals("java.util.List<java.lang.Long>")
-                    || pType.toString().equals("java.util.List<java.lang.String>")){
+            TypeCreator typeCreator = new TypeCreator();
+            Class<?> collectionIncludedClass;
+            try {
+                collectionIncludedClass = typeCreator.getClass(pType.getActualTypeArguments()[0].getTypeName());
+            } catch (ClassNotFoundException e) {
+                throw new GetIdInvocationFailException(e.getMessage());
+            }
+            if(String.class.isAssignableFrom(collectionIncludedClass)
+                    || String.class.isAssignableFrom(collectionIncludedClass)){
                 return extractIdsFromPlainList((String) argValue);
             }
             Collection<Object> objects = gson.fromJson((String) argValue, pType);

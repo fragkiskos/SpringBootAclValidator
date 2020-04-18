@@ -38,7 +38,7 @@ public class TypeCreator {
     }
 
 
-    private Class<?> getClass(String name) throws ClassNotFoundException {
+    public Class<?> getClass(String name) throws ClassNotFoundException {
         Class<?> act = Class.forName(name);
         return act;
     }
