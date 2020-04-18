@@ -11,8 +11,8 @@ import acldemo.validation.annotationInfoExtraction.AclValidationInfo;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
-public class AclResponseFilter {
-    public boolean filter(HttpServletResponse response, Object handler) throws IdMapperLoadingException, GetIdInvocationFailException, UnSupportedMappingException {
+public class AclResponseValidator {
+    public boolean validate(HttpServletResponse response, Object handler) throws IdMapperLoadingException, GetIdInvocationFailException, UnSupportedMappingException {
         ResponseValueExtractorProvider responseValueExtractorProvider = new ResponseValueExtractorProvider(response);
         List<AclValidationInfo> aclValidations = new AclResponseValidationInfoExtractor()
                 .extractInfo(AclResponseValidate.class,handler, responseValueExtractorProvider);

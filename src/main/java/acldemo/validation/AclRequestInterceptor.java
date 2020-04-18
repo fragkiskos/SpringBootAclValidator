@@ -5,8 +5,8 @@ import acldemo.validation.exceptions.GetIdInvocationFailException;
 import acldemo.validation.exceptions.IdMapperLoadingException;
 import acldemo.validation.exceptions.ParameterNotFoundException;
 import acldemo.validation.exceptions.UnSupportedMappingException;
-import acldemo.validation.filters.AclRequestFilter;
-import acldemo.validation.filters.AclResponseFilter;
+import acldemo.validation.filters.AclRequestValidator;
+import acldemo.validation.filters.AclResponseValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.lang.Nullable;
@@ -24,8 +24,8 @@ public class AclRequestInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         try{
-            AclRequestFilter aclRequestFilter = new AclRequestFilter();
-            return aclRequestFilter.filter(request, handler);
+            AclRequestValidator aclRequestValidator = new AclRequestValidator();
+            return aclRequestValidator.validate(request, handler);
         } catch (IdMapperLoadingException e) {
             //se deuteri fasi tha prepei na ginw austiros kai na faei 401
             logger.error(e.getMessage());
@@ -48,8 +48,8 @@ public class AclRequestInterceptor implements HandlerInterceptor {
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, @Nullable ModelAndView modelAndView) throws Exception {
 
         try{
-            AclResponseFilter aclResponseFilter = new AclResponseFilter();
-            aclResponseFilter.filter(response,handler);
+            AclResponseValidator aclResponseValidator = new AclResponseValidator();
+            aclResponseValidator.validate(response,handler);
         } catch (IdMapperLoadingException e) {
             //se deuteri fasi tha prepei na ginw austiros kai na faei 401
             logger.error(e.getMessage());

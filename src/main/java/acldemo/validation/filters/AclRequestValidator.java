@@ -12,8 +12,8 @@ import acldemo.validation.exceptions.ParameterNotFoundException;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
-public class AclRequestFilter {
-    public boolean filter(HttpServletRequest request, Object handler) throws IdMapperLoadingException, ParameterNotFoundException, GetIdInvocationFailException, UnSupportedMappingException {
+public class AclRequestValidator {
+    public boolean validate(HttpServletRequest request, Object handler) throws IdMapperLoadingException, ParameterNotFoundException, GetIdInvocationFailException, UnSupportedMappingException {
         RequestValueExtractorProvider requestValueExtractorProvider = new RequestValueExtractorProvider(request);
         List<AclValidationInfo> aclValidations = new AclRequestValidationInfoExtractor().extractInfo(AclRequestValidate.class,handler, requestValueExtractorProvider);
         if(aclValidations.isEmpty()){
