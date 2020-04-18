@@ -1,4 +1,4 @@
-package acldemo.validation.filters;
+package acldemo.validation.validators;
 
 import acldemo.validation.aclAnnotations.AclResponseValidate;
 import acldemo.validation.annotationInfoExtraction.response.AclResponseValidationInfoExtractor;
