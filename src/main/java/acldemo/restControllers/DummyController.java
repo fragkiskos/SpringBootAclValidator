@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api")
@@ -63,6 +64,13 @@ public class DummyController {
     @AclRequestValidate(paramName = "userDtos", className = DummyEntity.class  , action = AclAction.READ)
     @AclResponseValidate(className = DummyEntity.class, action = AclAction.READ)
     public ResponseEntity<List<UserDto>> listOfCustomObjectsValidation(@RequestBody List<UserDto> userDtos){
+        return ResponseEntity.ok(userDtos);
+    }
+
+    @PostMapping("post/setOfCustomObjectsValidation/multi")
+    @AclRequestValidate(paramName = "userDtos", className = DummyEntity.class  , action = AclAction.READ)
+    @AclResponseValidate(className = DummyEntity.class, action = AclAction.READ)
+    public ResponseEntity<Set<UserDto>> setOfCustomObjectsValidation(@RequestBody Set<UserDto> userDtos){
         return ResponseEntity.ok(userDtos);
     }
 

@@ -10,10 +10,7 @@ import com.google.gson.JsonParser;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Function;
 
 public class CommonIdMapper {
@@ -36,13 +33,13 @@ public class CommonIdMapper {
         
 
 
-        if(paramType.getType().equals(List.class)){
+        if(Collection.class.isAssignableFrom(paramType.getType()) ){
             ParameterizedType pType = paramType.getpType();
             if(pType.toString().equals("java.util.List<java.lang.Long>")
                     || pType.toString().equals("java.util.List<java.lang.String>")){
                 return extractIdsFromPlainList((String) argValue);
             }
-            List<Object> objects = gson.fromJson((String) argValue, pType);
+            Collection<Object> objects = gson.fromJson((String) argValue, pType);
             List<Long> ids = new ArrayList<>();
             for(Object o: objects){
                 ids.add(extractSingleObjectIds(o.getClass(),o));

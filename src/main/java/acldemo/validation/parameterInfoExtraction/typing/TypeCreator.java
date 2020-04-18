@@ -5,12 +5,13 @@ import org.springframework.http.ResponseEntity;
 import java.lang.reflect.Parameter;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.Collection;
 import java.util.List;
 
 public class TypeCreator {
 
     public ParamType getParamType(Parameter p) {
-        if (p.getType().equals(List.class)) {
+        if (Collection.class.isAssignableFrom(p.getType())) {
             return new ParamType(p.getType(), (ParameterizedType) p.getParameterizedType());
         } else {
             return new ParamType(p.getType());
@@ -18,7 +19,7 @@ public class TypeCreator {
     }
 
     public ParamType getParamType(Class<?> returnType, Type genericType) throws ClassNotFoundException {
-        if (returnType.equals(List.class)) {
+        if (Collection.class.isAssignableFrom(returnType)) {
             return new ParamType(returnType, (ParameterizedType) genericType);
         } else if (returnType.equals(ResponseEntity.class)) {
             Type type = ((ParameterizedType) genericType).getActualTypeArguments()[0];
