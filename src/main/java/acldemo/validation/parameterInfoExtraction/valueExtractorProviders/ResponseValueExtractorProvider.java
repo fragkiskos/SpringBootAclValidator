@@ -4,7 +4,7 @@ import acldemo.validation.mapping.ResponseIdMapper;
 import acldemo.validation.parameterInfoExtraction.typing.TypeCreator;
 import acldemo.validation.parameterInfoExtraction.valueExtractors.ParameterValueExtractor;
 import acldemo.validation.parameterInfoExtraction.valueExtractors.BodyExtractor;
-import acldemo.validation.BodyWrapping.response.CachedBodyHttpServletRespose;
+import acldemo.validation.BodyWrapping.response.CachedBodyHttpServletResponse;
 import acldemo.validation.mapping.CustomIdMapper;
 
 import javax.servlet.http.HttpServletResponse;
@@ -32,7 +32,7 @@ public class ResponseValueExtractorProvider {
     }
 
     private String getResponseBodyValue(HttpServletResponse response) {
-        CachedBodyHttpServletRespose cachedResponse = (CachedBodyHttpServletRespose) response;
+        CachedBodyHttpServletResponse cachedResponse = (CachedBodyHttpServletResponse) response;
         String responseBody = new String(cachedResponse.getContentAsByteArray());
         return responseBody;
     }

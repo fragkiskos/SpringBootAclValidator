@@ -11,7 +11,7 @@ import javax.servlet.WriteListener;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
 
-public class CachedBodyHttpServletRespose extends HttpServletResponseWrapper {
+public class CachedBodyHttpServletResponse extends HttpServletResponseWrapper {
 
     private static class ServletOutputStreamCopier extends ServletOutputStream {
 
@@ -49,7 +49,7 @@ public class CachedBodyHttpServletRespose extends HttpServletResponseWrapper {
     private PrintWriter writer;
     private ServletOutputStreamCopier copier;
 
-    public CachedBodyHttpServletRespose(HttpServletResponse response) throws IOException {
+    public CachedBodyHttpServletResponse(HttpServletResponse response) throws IOException {
         super(response);
     }
 

@@ -9,8 +9,6 @@ import java.util.Optional;
 
 public interface IdMapper  {
 
-    public List<Long> mapToLongs(ParamType paramType,
-                                 Object argValue,
-                                 Optional<CustomIdMapper> userDefinedMapper
+     List<Long> mapToLongs(ParamType paramType, Object argValue, Optional<CustomIdMapper> userDefinedMapper
     ) throws GetIdInvocationFailException, UnSupportedMappingException;
 }
