@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletResponseWrapper;
 
 public class CachedBodyHttpServletResponse extends HttpServletResponseWrapper {
 
-    private static class ServletOutputStreamCopier extends ServletOutputStream {
+    public static class ServletOutputStreamCopier extends ServletOutputStream {
 
         private OutputStream outputStream;
         private ByteArrayOutputStream copy;

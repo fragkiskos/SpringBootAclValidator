@@ -44,17 +44,17 @@ public class CommonIdMapper {
                 throw new GetIdInvocationFailException(e.getMessage());
             }
             if(String.class.isAssignableFrom(collectionIncludedClass)
-                    || String.class.isAssignableFrom(collectionIncludedClass)){
+                    || Long.class.isAssignableFrom(collectionIncludedClass)){
                 return extractIdsFromPlainList((String) argValue);
             }
             Collection<Object> objects = gson.fromJson((String) argValue, pType);
             List<Long> ids = new ArrayList<>();
             for(Object o: objects){
-                ids.add(extractSingleObjectIds(o.getClass(),o));
+                ids.addAll(extractSingleObjectIds(o.getClass(),o));
             }
             return ids;
         }
-        return Collections.singletonList(extractSingleObjectIds(paramType.getType(),argValue));
+        return extractSingleObjectIds(paramType.getType(),argValue);
 
 
     }
@@ -75,15 +75,26 @@ public class CommonIdMapper {
         return ids;
     }
 
-    private Long extractSingleObjectIds(Class objectClass, Object argValue) throws GetIdInvocationFailException {
+    private List<Long> parseListOfJsonObjectsAsJson(String value) {
+        List<Long> ids = new ArrayList<>();
+        final JsonArray asJsonArray = new JsonParser().parse(value).getAsJsonArray();
+        asJsonArray.forEach(j->ids.add(j.getAsJsonObject().get("id").getAsLong()));
+        return ids;
+    }
+
+    private List<Long> extractSingleObjectIds(Class objectClass, Object argValue) throws GetIdInvocationFailException {
 
         //argvalue is long
-        if(objectClass.equals(Long.class)) return Long.parseLong((String)argValue);
+        if(objectClass.equals(Long.class)) return Collections.singletonList(Long.parseLong((String)argValue));
+
+        if(objectClass.equals(Map.class)) {
+            JsonObject jsonObject = new JsonParser().parse((String) argValue).getAsJsonObject();
+            return parseJsonObjectForId(jsonObject);
+        }
 
         //string mapping
         if(objectClass.equals(String.class)){
-            Optional<Long> id = stringMapping(objectClass, argValue);
-            if(id.isPresent()) return id.get();
+            return stringMapping(objectClass, argValue);
         }
 
 
@@ -94,30 +105,35 @@ public class CommonIdMapper {
         if(argValue.getClass().equals(String.class)){
             o = gson.fromJson((String)argValue,objectClass);
         }
-        return getIdFromObject(o);
+        return Collections.singletonList(getIdFromObject(o));
     }
 
-    private Optional<Long> stringMapping(Class objectClass, Object argValue) {
-        if(objectClass.equals(String.class)){
-            try{
-                return Optional.of(Long.parseLong((String) argValue));
-            }catch (NumberFormatException ex){
-                JsonObject jsonObject = new JsonParser().parse((String) argValue).getAsJsonObject();
-                return parseJsonObjectForId(jsonObject);
+    private List<Long> stringMapping(Class objectClass, Object argValue) {
+        if(objectClass.equals(String.class)) {
+            try {
+                return Collections.singletonList(Long.parseLong((String) argValue));
+            } catch (NumberFormatException ex) {
+                try {
+                    JsonObject jsonObject = new JsonParser().parse((String) argValue).getAsJsonObject();
+                    return parseJsonObjectForId(jsonObject);
+                } catch (IllegalStateException ilex) {
+                    return parseListOfJsonObjectsAsJson((String) argValue);
+                }
             }
         }
-        return Optional.empty();
+        return Collections.emptyList();
     }
 
 
-    private Optional<Long> parseJsonObjectForId(JsonObject jsonObject) {
+    private List<Long> parseJsonObjectForId(JsonObject jsonObject) {
         Long id = jsonObject.get("id").getAsLong();
         if(id == null) {
-            return Optional.empty();
+            return Collections.emptyList();
         }else {
-            return Optional.of(id);
+            return Collections.singletonList(id);
         }
     }
+
 
     private Long getIdFromObject(Object o) throws GetIdInvocationFailException {
         try {

@@ -1,4 +1,4 @@
-package acldemo.validation.request.parameterInfoExtraction;
+package acldemo.validation.request.parameterInfoExtraction.idMapping;
 
 
 import acldemo.validation.exceptions.GetIdInvocationFailException;
