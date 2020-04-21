@@ -4,37 +4,37 @@ This is a spring boot module which offers acl validation to your rest API
 
 ## Validation Supported Types ##
 
-# Request parameters #
+### Request parameters ###
 * Long
 * String
 * Collection&lt;Long&gt;
-* Collection<String>
+* Collection&lt;String&gt;
 
-# Path parameters #
+### Path parameters ###
 * Long
 * String
 
-# Request body(only json support) #
+### Request body(only json support) ###
 * Long
 * String
-* Collection<Long>
-* Collection<String>
+* Collection&lt;Long&gt;
+* Collection&lt;String&gt;
 * String(JsonObject)
-* Collection<String>(JsonObjects)
+* Collection&lt;String&gt;(JsonObjects)
 * String(JsonArray)
 * Map
 * CustomObject
-* Collection<CustomObject>
+* Collection&lt;CustomObject&gt;
 
-# Response body(only json support) #
+### Response body(only json support) ###
 * Long
 * String
-* Collection<Long>
-* Collection<String>
+* Collection&lt;Long&gt;
+* Collection&lt;String&gt;
 * String(JsonObject)
-* Collection<String>(JsonObjects)
+* Collection&lt;String&gt;(JsonObjects)
 * String(JsonArray)
 * Map
 * CustomObject
-* Collection<CustomObject>
+* Collection&lt;CustomObject&gt;
 * all of the above types wrapped in ResponseEntity
