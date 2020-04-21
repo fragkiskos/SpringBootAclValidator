@@ -7,7 +7,7 @@ This is a spring boot module which offers acl validation to your rest API
 # Request parameters #
 * Long
 * String
-* Collection<Long>
+* Collection&lt;Long&gt;
 * Collection<String>
 
 # Path parameters #
