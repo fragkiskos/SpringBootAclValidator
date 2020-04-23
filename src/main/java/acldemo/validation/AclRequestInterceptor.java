@@ -1,6 +1,9 @@
 package acldemo.validation;
 
 
+import acldemo.validation.aclProviding.DefaultAclProvider;
+import acldemo.validation.aclProviding.IAclProvider;
+import acldemo.validation.aclProviding.IUserInfoProvider;
 import acldemo.validation.exceptions.GetIdInvocationFailException;
 import acldemo.validation.exceptions.IdMapperLoadingException;
 import acldemo.validation.exceptions.ParameterNotFoundException;
@@ -9,6 +12,8 @@ import acldemo.validation.validators.AclRequestValidator;
 import acldemo.validation.validators.AclResponseValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -21,10 +26,30 @@ import javax.servlet.http.HttpServletResponse;
 public class AclRequestInterceptor implements HandlerInterceptor {
     Logger logger = LoggerFactory.getLogger(AclRequestInterceptor.class);
 
+    @Autowired(required = false)
+    @Qualifier("AclProvider")
+    IAclProvider aclProvider;
+
+    @Autowired(required = false)
+    @Qualifier("UserInfoProvider")
+    IUserInfoProvider userInfoProvider;
+
+    @Autowired
+    DefaultAclProvider defaultAclProvider;
+
+
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         try{
-            AclRequestValidator aclRequestValidator = new AclRequestValidator();
+            if(aclProvider == null){
+                aclProvider = defaultAclProvider;
+            }
+            if(userInfoProvider == null){
+                logger.error("You don't have any Component wihich implements IUserInfoProvider," +
+                        " hence I can not get user's info in order to validate acls");
+                return HandlerInterceptor.super.preHandle(request, response, handler);
+            }
+            AclRequestValidator aclRequestValidator = new AclRequestValidator(aclProvider,userInfoProvider);
             return aclRequestValidator.validate(request, handler);
         } catch (IdMapperLoadingException e) {
             //se deuteri fasi tha prepei na ginw austiros kai na faei 401
