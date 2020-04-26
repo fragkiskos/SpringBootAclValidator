@@ -1,4 +1,4 @@
-package acldemo.validation.aclProviding;
+package acldemo.validation.userinfoProviding;
 
 import javax.servlet.http.HttpServletRequest;
 

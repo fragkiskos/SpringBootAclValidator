@@ -1,9 +1,8 @@
 package acldemo.validation;
 
 
-import acldemo.validation.aclProviding.DefaultAclProvider;
 import acldemo.validation.aclProviding.IAclProvider;
-import acldemo.validation.aclProviding.IUserInfoProvider;
+import acldemo.validation.userinfoProviding.IUserInfoProvider;
 import acldemo.validation.exceptions.GetIdInvocationFailException;
 import acldemo.validation.exceptions.IdMapperLoadingException;
 import acldemo.validation.exceptions.ParameterNotFoundException;
@@ -34,21 +33,11 @@ public class AclRequestInterceptor implements HandlerInterceptor {
     @Qualifier("UserInfoProvider")
     IUserInfoProvider userInfoProvider;
 
-    @Autowired
-    DefaultAclProvider defaultAclProvider;
-
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         try{
-            if(aclProvider == null){
-                aclProvider = defaultAclProvider;
-            }
-            if(userInfoProvider == null){
-                logger.error("You don't have any Component wihich implements IUserInfoProvider," +
-                        " hence I can not get user's info in order to validate acls");
-                return HandlerInterceptor.super.preHandle(request, response, handler);
-            }
+            if (checkForProviders()) return HandlerInterceptor.super.preHandle(request, response, handler);
             AclRequestValidator aclRequestValidator = new AclRequestValidator(aclProvider,userInfoProvider);
             return aclRequestValidator.validate(request, handler);
         } catch (IdMapperLoadingException e) {
@@ -69,11 +58,14 @@ public class AclRequestInterceptor implements HandlerInterceptor {
 
     }
 
+
+
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, @Nullable ModelAndView modelAndView) throws Exception {
 
         try{
-            AclResponseValidator aclResponseValidator = new AclResponseValidator();
+            if (checkForProviders()) return;
+            AclResponseValidator aclResponseValidator = new AclResponseValidator(aclProvider,userInfoProvider,request);
             aclResponseValidator.validate(response,handler);
         } catch (IdMapperLoadingException e) {
             //se deuteri fasi tha prepei na ginw austiros kai na faei 401
@@ -83,6 +75,20 @@ public class AclRequestInterceptor implements HandlerInterceptor {
         }catch (UnSupportedMappingException e){
             logger.error(e.getMessage());
         }
+    }
+
+    private boolean checkForProviders() throws Exception {
+        if(aclProvider == null){
+            logger.error("You don't have any Component which implements IAclProvider," +
+                    " hence I can not get acls in order to validate them");
+            return true;
+        }
+        if(userInfoProvider == null){
+            logger.error("You don't have any Component wihich implements IUserInfoProvider," +
+                    " hence I can not get user's info in order to validate acls");
+            return true;
+        }
+        return false;
     }
 
     @Override

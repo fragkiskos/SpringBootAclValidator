@@ -8,5 +8,5 @@ public interface IAclProvider  {
     Acl find(Long id);
     void update(Acl acl);
     void delete(Long id);
-    Optional<Long> find(Acl acl);
+    Optional<Long> find(AclSearchCriteria serachCriteria);
 }

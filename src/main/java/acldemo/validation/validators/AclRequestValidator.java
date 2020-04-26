@@ -1,10 +1,7 @@
 package acldemo.validation.validators;
 
-import acldemo.validation.aclProviding.Acl;
-import acldemo.validation.aclProviding.IAclProvider;
+import acldemo.validation.aclProviding.*;
 import acldemo.validation.aclAnnotations.AclRequestValidate;
-import acldemo.validation.aclProviding.IUserInfoProvider;
-import acldemo.validation.aclProviding.UserInfo;
 import acldemo.validation.annotationInfoExtraction.AclValidationInfo;
 import acldemo.validation.annotationInfoExtraction.request.AclRequestValidationInfoExtractor;
 import acldemo.validation.exceptions.UnSupportedMappingException;
@@ -12,6 +9,8 @@ import acldemo.validation.parameterInfoExtraction.valueExtractorProviders.Reques
 import acldemo.validation.exceptions.GetIdInvocationFailException;
 import acldemo.validation.exceptions.IdMapperLoadingException;
 import acldemo.validation.exceptions.ParameterNotFoundException;
+import acldemo.validation.userinfoProviding.IUserInfoProvider;
+import acldemo.validation.userinfoProviding.UserInfo;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -42,12 +41,13 @@ public class AclRequestValidator {
     private boolean validateAcl(List<AclValidationInfo> aclValidations, UserInfo userInfo) {
         for(AclValidationInfo aclValidation:aclValidations){
             for(Long id: aclValidation.getIds()){
-                Acl acl = new Acl(id,
-                        userInfo.getOrganizationId(),
+                AclSearchCriteria searchCriteria = new AclSearchCriteria(id,
                         aclValidation.getClassname(),
                         userInfo.getUsername(),
                         aclValidation.getAction());
-                Optional<Long> aclOpt = aclProvider.find(acl);
+
+
+                Optional<Long> aclOpt = aclProvider.find(searchCriteria);
                 if(!aclOpt.isPresent()) return false;
             }
         }
