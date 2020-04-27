@@ -1,6 +1,7 @@
 package aclValidation.validation.aclProviding;
 
 import aclValidation.validation.aclAnnotations.AclAction;
+import aclValidation.validation.aclAnnotations.OperatorType;
 
 
 public class AclSearchCriteria {
@@ -12,11 +13,14 @@ public class AclSearchCriteria {
 
     protected AclAction action;
 
-    public AclSearchCriteria(Long objectId, String className, String operator, AclAction action) {
+    protected OperatorType operatorType;
+
+    public AclSearchCriteria(Long objectId, String className, String operator, AclAction action, OperatorType operatorType) {
         this.objectId = objectId;
         this.className = className;
         this.operator = operator;
         this.action = action;
+        this.operatorType = operatorType;
     }
 
 
@@ -36,5 +40,9 @@ public class AclSearchCriteria {
 
     public AclAction getAction() {
         return action;
+    }
+
+    public OperatorType getOperatorType() {
+        return operatorType;
     }
 }

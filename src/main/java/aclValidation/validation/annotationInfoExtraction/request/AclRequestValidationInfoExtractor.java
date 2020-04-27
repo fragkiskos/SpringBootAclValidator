@@ -44,7 +44,7 @@ public class AclRequestValidationInfoExtractor {
             List<Long> ids = valueExtractor.extractIds();
             String entityName = declaredAnnotation.className().getName();
             AclAction action = declaredAnnotation.action();
-            results.add(new AclValidationInfo(ids,entityName,action));
+            results.add(new AclValidationInfo(ids,entityName,action,declaredAnnotation.operatorType()));
         }
 
 

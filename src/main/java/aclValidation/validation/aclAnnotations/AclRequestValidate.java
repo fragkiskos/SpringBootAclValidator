@@ -14,4 +14,6 @@ public @interface AclRequestValidate {
     AclAction action();
 
     Class idMapper() default void.class;
+
+    OperatorType operatorType() default OperatorType.ROLE;
 }

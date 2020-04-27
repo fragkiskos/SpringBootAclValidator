@@ -44,7 +44,8 @@ public class AclRequestValidator {
                 AclSearchCriteria searchCriteria = new AclSearchCriteria(id,
                         aclValidation.getClassname(),
                         userInfo.getUsername(),
-                        aclValidation.getAction());
+                        aclValidation.getAction(),
+                        aclValidation.getOperatorType());
 
 
                 Optional<Long> aclOpt = aclProvider.find(searchCriteria);
