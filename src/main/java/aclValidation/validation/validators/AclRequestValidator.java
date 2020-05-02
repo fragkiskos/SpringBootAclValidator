@@ -28,12 +28,13 @@ public class AclRequestValidator {
     }
 
     public boolean validate(HttpServletRequest request, Object handler) throws IdMapperLoadingException, ParameterNotFoundException, GetIdInvocationFailException, UnSupportedMappingException {
-        final UserInfo userInfo = userInfoProvider.getUserInfo(request);
+
         RequestValueExtractorProvider requestValueExtractorProvider = new RequestValueExtractorProvider(request);
         List<AclValidationInfo> aclValidations = new AclRequestValidationInfoExtractor().extractInfo(AclRequestValidate.class,handler, requestValueExtractorProvider);
         if(aclValidations.isEmpty()){
             return true;
         }else{
+            final UserInfo userInfo = userInfoProvider.getUserInfo(request);
             return validateAcl(aclValidations,userInfo);
         }
     }

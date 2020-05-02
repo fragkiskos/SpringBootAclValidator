@@ -18,6 +18,7 @@ import java.lang.reflect.Parameter;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import org.springframework.security.web.servletapi.*;
 
 public class RequestValueExtractorProvider {
 
@@ -76,7 +77,14 @@ public class RequestValueExtractorProvider {
 
 
     private String getRequestBodyValue(HttpServletRequest request) throws IOException {
-        CachedBodyHttpServletRequest requestWrapper = (CachedBodyHttpServletRequest) request;
+        CachedBodyHttpServletRequest requestWrapper;
+        if(request instanceof SecurityContextHolderAwareRequestWrapper ){
+            SecurityContextHolderAwareRequestWrapper req = (SecurityContextHolderAwareRequestWrapper) request;
+            requestWrapper = (CachedBodyHttpServletRequest) req.getRequest();
+        }else{
+            requestWrapper = (CachedBodyHttpServletRequest) request;
+        }
+
         return requestWrapper.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
     }
 

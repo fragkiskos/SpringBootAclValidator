@@ -1,6 +1,7 @@
 package aclValidation.validation.BodyWrapping;
 
 import java.io.IOException;
+import java.util.stream.Collectors;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -15,9 +16,8 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-@Order(value = Ordered.HIGHEST_PRECEDENCE)
+
 @Component
-@WebFilter(filterName = "ContentCachingFilter", urlPatterns = "/*")
 public class ContentCachingFilter extends OncePerRequestFilter {
 
     @Override
