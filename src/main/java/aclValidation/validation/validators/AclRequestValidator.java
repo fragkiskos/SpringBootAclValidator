@@ -19,12 +19,10 @@ import java.util.Optional;
 
 public class AclRequestValidator {
 
-    IAclProvider aclProvider;
-    IUserInfoProvider userInfoProvider;
+    IAclValidator aclProvider;
 
-    public AclRequestValidator(IAclProvider aclProvider,IUserInfoProvider userInfoProvider) {
+    public AclRequestValidator(IAclValidator aclProvider) {
         this.aclProvider = aclProvider;
-        this.userInfoProvider = userInfoProvider;
     }
 
     public boolean validate(HttpServletRequest request, Object handler) throws IdMapperLoadingException, ParameterNotFoundException, GetIdInvocationFailException, UnSupportedMappingException {
@@ -34,24 +32,13 @@ public class AclRequestValidator {
         if(aclValidations.isEmpty()){
             return true;
         }else{
-            final UserInfo userInfo = userInfoProvider.getUserInfo(request);
-            return validateAcl(aclValidations,userInfo);
+            return validateAcl(aclValidations,request);
         }
     }
 
-    private boolean validateAcl(List<AclValidationInfo> aclValidations, UserInfo userInfo) {
+    private boolean validateAcl(List<AclValidationInfo> aclValidations,HttpServletRequest request) {
         for(AclValidationInfo aclValidation:aclValidations){
-            for(Long id: aclValidation.getIds()){
-                AclSearchCriteria searchCriteria = new AclSearchCriteria(id,
-                        aclValidation.getClassname(),
-                        userInfo.getUsername(),
-                        aclValidation.getAction(),
-                        aclValidation.getOperatorType());
-
-
-                Optional<Long> aclOpt = aclProvider.find(searchCriteria);
-                if(!aclOpt.isPresent()) return false;
-            }
+            if(!aclProvider.validate(aclValidation,request)) return false;
         }
         return true;
     }

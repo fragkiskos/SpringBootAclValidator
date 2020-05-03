@@ -1,8 +1,7 @@
 package aclValidation.validation.validators;
 
 import aclValidation.validation.aclAnnotations.AclResponseValidate;
-import aclValidation.validation.aclProviding.AclSearchCriteria;
-import aclValidation.validation.aclProviding.IAclProvider;
+import aclValidation.validation.aclProviding.IAclValidator;
 import aclValidation.validation.annotationInfoExtraction.response.AclResponseValidationInfoExtractor;
 import aclValidation.validation.exceptions.UnSupportedMappingException;
 import aclValidation.validation.parameterInfoExtraction.valueExtractorProviders.ResponseValueExtractorProvider;
@@ -18,13 +17,11 @@ import java.util.List;
 import java.util.Optional;
 
 public class AclResponseValidator {
-    IAclProvider aclProvider;
-    IUserInfoProvider userInfoProvider;
+    IAclValidator aclProvider;
     HttpServletRequest request;
 
-    public AclResponseValidator(IAclProvider aclProvider, IUserInfoProvider userInfoProvider, HttpServletRequest request) {
+    public AclResponseValidator(IAclValidator aclProvider, HttpServletRequest request) {
         this.aclProvider = aclProvider;
-        this.userInfoProvider = userInfoProvider;
         this.request = request;
     }
 
@@ -35,24 +32,13 @@ public class AclResponseValidator {
         if(aclValidations.isEmpty()){
             return true;
         }else{
-            final UserInfo userInfo = userInfoProvider.getUserInfo(request);
-            return validateAcl(aclValidations,userInfo);
+            return validateAcl(aclValidations);
         }
     }
 
-    private boolean validateAcl(List<AclValidationInfo> aclValidations, UserInfo userInfo) {
+    private boolean validateAcl(List<AclValidationInfo> aclValidations) {
         for(AclValidationInfo aclValidation:aclValidations){
-            for(Long id: aclValidation.getIds()){
-                AclSearchCriteria searchCriteria = new AclSearchCriteria(id,
-                        aclValidation.getClassname(),
-                        userInfo.getUsername(),
-                        aclValidation.getAction(),
-                        aclValidation.getOperatorType());
-
-
-                Optional<Long> aclOpt = aclProvider.find(searchCriteria);
-                if(!aclOpt.isPresent()) return false;
-            }
+            if(!aclProvider.validate(aclValidation,this.request)) return false;
         }
         return true;
     }

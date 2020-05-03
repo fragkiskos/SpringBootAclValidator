@@ -1,7 +1,7 @@
 package aclValidation.validation;
 
 
-import aclValidation.validation.aclProviding.IAclProvider;
+import aclValidation.validation.aclProviding.IAclValidator;
 import aclValidation.validation.userinfoProviding.IUserInfoProvider;
 import aclValidation.validation.exceptions.GetIdInvocationFailException;
 import aclValidation.validation.exceptions.IdMapperLoadingException;
@@ -13,8 +13,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpStatus;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -27,19 +29,20 @@ public class AclRequestInterceptor implements HandlerInterceptor {
 
     @Autowired(required = false)
     @Qualifier("AclProvider")
-    IAclProvider aclProvider;
-
-    @Autowired(required = false)
-    @Qualifier("UserInfoProvider")
-    IUserInfoProvider userInfoProvider;
+    IAclValidator aclProvider;
 
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         try{
             if (checkForProviders()) return HandlerInterceptor.super.preHandle(request, response, handler);
-            AclRequestValidator aclRequestValidator = new AclRequestValidator(aclProvider,userInfoProvider);
-            return aclRequestValidator.validate(request, handler);
+            AclRequestValidator aclRequestValidator = new AclRequestValidator(aclProvider);
+            if(aclRequestValidator.validate(request, handler)){
+                return true;
+            }else{
+                response.setStatus(HttpStatus.FORBIDDEN.value());
+                return false;
+            }
         } catch (IdMapperLoadingException e) {
             //se deuteri fasi tha prepei na ginw austiros kai na faei 401
             logger.error(e.getMessage());
@@ -65,8 +68,10 @@ public class AclRequestInterceptor implements HandlerInterceptor {
 
         try{
             if (checkForProviders()) return;
-            AclResponseValidator aclResponseValidator = new AclResponseValidator(aclProvider,userInfoProvider,request);
-            aclResponseValidator.validate(response,handler);
+            AclResponseValidator aclResponseValidator = new AclResponseValidator(aclProvider,request);
+            if(!aclResponseValidator.validate(response,handler)){
+                response.setStatus(HttpStatus.FORBIDDEN.value());
+            }
         } catch (IdMapperLoadingException e) {
             //se deuteri fasi tha prepei na ginw austiros kai na faei 401
             logger.error(e.getMessage());
@@ -81,11 +86,6 @@ public class AclRequestInterceptor implements HandlerInterceptor {
         if(aclProvider == null){
             logger.error("You don't have any Component which implements IAclProvider," +
                     " hence I can not get acls in order to validate them");
-            return true;
-        }
-        if(userInfoProvider == null){
-            logger.error("You don't have any Component wihich implements IUserInfoProvider," +
-                    " hence I can not get user's info in order to validate acls");
             return true;
         }
         return false;
