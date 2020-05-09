@@ -22,8 +22,7 @@ import java.util.Optional;
 
 public class AclResponseValidationInfoExtractor {
 
-    public List<AclValidationInfo> extractInfo(Class annotation,
-                                               Object handler,
+    public List<AclValidationInfo> extractInfo(Object handler,
                                                ResponseValueExtractorProvider requestValueExtractorProvider) throws IdMapperLoadingException, GetIdInvocationFailException, UnSupportedMappingException {
         Method method = new MethodExtractor().getMethod((HandlerMethod) handler);
         List<AclValidationInfo> results = new ArrayList<>();

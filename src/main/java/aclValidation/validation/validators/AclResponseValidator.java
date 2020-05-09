@@ -8,38 +8,28 @@ import aclValidation.validation.parameterInfoExtraction.valueExtractorProviders.
 import aclValidation.validation.exceptions.GetIdInvocationFailException;
 import aclValidation.validation.exceptions.IdMapperLoadingException;
 import aclValidation.validation.annotationInfoExtraction.AclValidationInfo;
-import aclValidation.validation.userinfoProviding.IUserInfoProvider;
-import aclValidation.validation.userinfoProviding.UserInfo;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
-import java.util.Optional;
 
 public class AclResponseValidator {
-    IAclValidator aclProvider;
+    IAclValidator aclValidator;
     HttpServletRequest request;
 
-    public AclResponseValidator(IAclValidator aclProvider, HttpServletRequest request) {
-        this.aclProvider = aclProvider;
+    public AclResponseValidator(IAclValidator aclValidator, HttpServletRequest request) {
+        this.aclValidator = aclValidator;
         this.request = request;
     }
 
     public boolean validate(HttpServletResponse response, Object handler) throws IdMapperLoadingException, GetIdInvocationFailException, UnSupportedMappingException {
-        ResponseValueExtractorProvider responseValueExtractorProvider = new ResponseValueExtractorProvider(response);
-        List<AclValidationInfo> aclValidations = new AclResponseValidationInfoExtractor()
-                .extractInfo(AclResponseValidate.class,handler, responseValueExtractorProvider);
-        if(aclValidations.isEmpty()){
-            return true;
-        }else{
-            return validateAcl(aclValidations);
-        }
+        return validateObjectAcl(response, handler);
     }
 
-    private boolean validateAcl(List<AclValidationInfo> aclValidations) {
-        for(AclValidationInfo aclValidation:aclValidations){
-            if(!aclProvider.validate(aclValidation,this.request)) return false;
-        }
-        return true;
+    private boolean validateObjectAcl(HttpServletResponse response, Object handler) throws IdMapperLoadingException, GetIdInvocationFailException, UnSupportedMappingException {
+        ResponseValueExtractorProvider responseValueExtractorProvider = new ResponseValueExtractorProvider(response);
+        List<AclValidationInfo> aclValidations = new AclResponseValidationInfoExtractor()
+                .extractInfo(handler, responseValueExtractorProvider);
+        return new AclObjectValidator(aclValidator, request).validateAcls(aclValidations);
     }
 }

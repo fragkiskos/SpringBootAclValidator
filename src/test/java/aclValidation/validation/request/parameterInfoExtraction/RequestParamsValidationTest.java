@@ -96,8 +96,7 @@ public class RequestParamsValidationTest {
         CachedBodyHttpServletRequest cachedRequest = new CachedBodyHttpServletRequest(httpMockedRequest);
         RequestValueExtractorProvider requestValueExtractorProvider = new RequestValueExtractorProvider(cachedRequest);
         List<AclValidationInfo> aclValidations = new AclRequestValidationInfoExtractor()
-                .extractInfo(AclRequestValidate.class,
-                        getHandlerMethod(methodName,parameterType),
+                .extractInfo(getHandlerMethod(methodName,parameterType),
                         requestValueExtractorProvider);
         return aclValidations;
     }

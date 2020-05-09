@@ -204,8 +204,7 @@ public class ResponseEntityValidationTest {
 
         ResponseValueExtractorProvider requestValueExtractorProvider = new ResponseValueExtractorProvider(httpMockedResponse);
         List<AclValidationInfo> aclValidations = new AclResponseValidationInfoExtractor()
-                .extractInfo(AclResponseValidate.class,
-                        getHandlerMethod(methodName,parameterType),
+                .extractInfo(getHandlerMethod(methodName,parameterType),
                         requestValueExtractorProvider);
         return aclValidations;
     }
