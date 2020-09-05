@@ -32,6 +32,7 @@ public class AclRequestInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        if(aclProvider.isUserSysAdmin(request)) return true;
         try{
             if (checkForProviders()) return HandlerInterceptor.super.preHandle(request, response, handler);
             AclRequestValidator aclRequestValidator = new AclRequestValidator(aclProvider);
@@ -63,7 +64,7 @@ public class AclRequestInterceptor implements HandlerInterceptor {
 
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, @Nullable ModelAndView modelAndView) throws Exception {
-
+        if(aclProvider.isUserSysAdmin(request)) return;
         try{
             if (checkForProviders()) return;
             AclResponseValidator aclResponseValidator = new AclResponseValidator(aclProvider,request);
