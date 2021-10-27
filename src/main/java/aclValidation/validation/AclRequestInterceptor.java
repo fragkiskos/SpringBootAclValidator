@@ -64,9 +64,10 @@ public class AclRequestInterceptor implements HandlerInterceptor {
 
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, @Nullable ModelAndView modelAndView) throws Exception {
-        if(aclProvider.isUserSysAdmin(request)) return;
+
         try{
             if (checkForProviders()) return;
+            if(aclProvider.isUserSysAdmin(request)) return;
             AclResponseValidator aclResponseValidator = new AclResponseValidator(aclProvider,request);
             if(!aclResponseValidator.validate(response,handler)){
                 response.setStatus(HttpStatus.FORBIDDEN.value());
