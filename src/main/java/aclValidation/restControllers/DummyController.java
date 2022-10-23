@@ -3,6 +3,7 @@ package aclValidation.restControllers;
 import aclValidation.validation.aclAnnotations.AclAction;
 import aclValidation.validation.aclAnnotations.AclRequestValidate;
 import aclValidation.validation.aclAnnotations.AclResponseValidate;
+import io.swagger.v3.oas.annotations.Hidden;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,6 +11,7 @@ import java.util.List;
 import java.util.Set;
 
 @RestController
+@Hidden
 @RequestMapping("/api")
 public class DummyController {
 
