@@ -33,7 +33,7 @@ public class PathParamsValidationTest {
     @Test
     public void shouldValidateLong() throws IOException, NoSuchMethodException, ClassNotFoundException, GetIdInvocationFailException, UnSupportedMappingException, ParameterNotFoundException, IdMapperLoadingException {
         Map pathVariables = new LinkedHashMap();
-        pathVariables.put("storeId","1");
+        pathVariables.put("merchantId","1");
         List<AclValidationInfo> aclValidations  = prepareRequestAndValidateMethod(pathVariables,"longValidation",Long.class);
 
         Assert.assertEquals(1,aclValidations.size());

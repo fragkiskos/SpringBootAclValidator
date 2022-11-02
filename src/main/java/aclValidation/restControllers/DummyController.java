@@ -15,12 +15,12 @@ import java.util.Set;
 @RequestMapping("/api")
 public class DummyController {
 
-    @GetMapping("/longValidation/{store_Id}/babis/{resource_Id}")
-    @AclRequestValidate(paramName = "storeId", className = DummyEntity.class, action = AclAction.READ)
+    @GetMapping("/longValidation/{merchant_Id}/babis/{resource_Id}")
+    @AclRequestValidate(paramName = "merchantId", className = DummyEntity.class, action = AclAction.READ)
     @AclRequestValidate(paramName = "resourceId", className = DummyEntity.class, action = AclAction.READ)
     @AclResponseValidate(className = DummyEntity.class,action = AclAction.READ)
-    public Long longValidation(@PathVariable(value = "store_Id") Long storeId,@PathVariable(value = "resource_Id") Long resourceId){
-        return storeId;
+    public Long longValidation(@PathVariable(value = "merchant_Id") Long merchantId,@PathVariable(value = "resource_Id") Long resourceId){
+        return merchantId;
     }
 
     @GetMapping("/stringValidation/{a}/singleObjectParams")

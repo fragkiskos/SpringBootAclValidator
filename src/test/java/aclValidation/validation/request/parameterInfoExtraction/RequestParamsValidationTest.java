@@ -34,7 +34,7 @@ public class RequestParamsValidationTest {
     public void shouldValidateLong() throws IOException, NoSuchMethodException, ClassNotFoundException, GetIdInvocationFailException, UnSupportedMappingException, ParameterNotFoundException, IdMapperLoadingException {
 
         Map parameterMap = new HashMap<String,String[]>();
-        parameterMap.put("storeId",new String[]{"1"});
+        parameterMap.put("merchantId",new String[]{"1"});
         List<AclValidationInfo> aclValidations  = prepareRequestAndValidateMethod(parameterMap,"longValidation",Long.class);
 
         Assert.assertEquals(1,aclValidations.size());

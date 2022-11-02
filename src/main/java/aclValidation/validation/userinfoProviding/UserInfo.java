@@ -9,6 +9,6 @@ public interface UserInfo {
 
     String getRoleName();
 
-    Long getStoreId();
+    Long getMerchantId();
 
 }

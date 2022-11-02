@@ -9,9 +9,9 @@ import java.util.List;
 
 public class RequestParamsValidationClass {
 
-    @AclRequestValidate(paramName = "storeId", className = DummyEntity.class, action = AclAction.READ)
-    public Long longValidation(@RequestParam(name = "storeId") Long storeId){
-        return storeId;
+    @AclRequestValidate(paramName = "merchantId", className = DummyEntity.class, action = AclAction.READ)
+    public Long longValidation(@RequestParam(name = "merchantId") Long merchantId){
+        return merchantId;
     }
 
     @AclRequestValidate(paramName = "b", className = DummyEntity.class  , action = AclAction.READ)
